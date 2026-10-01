@@ -222,8 +222,32 @@ static void die(const char *s) {
 	exit(EXIT_FAILURE);
 }
 
+static void help(FILE *out) {
+	fputs("usage: abduco [-a|-A|-c|-n] [-e key] [-f] [-l] [-p] [-q] [-r] name [command]\n"
+	      "\n"
+	      "  (no args)  list sessions\n"
+	      "\n"
+	      "modes:\n"
+	      "  -a         attach to an existing session\n"
+	      "  -A         attach, creating the session if missing\n"
+	      "  -c         create a session and attach\n"
+	      "  -n         create a session without attaching\n"
+	      "\n"
+	      "options:\n"
+	      "  -e key     set detach key (default ^\\, e.g. -e ^q)\n"
+	      "  -f         replace a terminated session (-c, -n, -A)\n"
+	      "  -l         low priority, do not resize the session\n"
+	      "  -p         pass-through, no terminal handling\n"
+	      "  -q         quiet, suppress messages\n"
+	      "  -r         read-only attach\n"
+	      "  -v         show version\n"
+	      "  -h         show this help\n"
+	      "\n"
+	      "command defaults to $ABDUCO_CMD, or " ABDUCO_CMD " if unset\n", out);
+}
+
 static void usage(void) {
-	fprintf(stderr, "usage: abduco [-a|-A|-c|-n] [-p] [-r] [-q] [-l] [-f] [-e detachkey] name command\n");
+	help(stderr);
 	exit(EXIT_FAILURE);
 }
 
@@ -606,7 +630,7 @@ int main(int argc, char *argv[]) {
 	server.name = basename(argv[0]);
 	gethostname(server.host+1, sizeof(server.host) - 1);
 
-	while ((opt = getopt(argc, argv, "aAclne:fpqrv")) != -1) {
+	while ((opt = getopt(argc, argv, "aAclne:fhpqrv")) != -1) {
 		switch (opt) {
 		case 'a':
 		case 'A':
@@ -624,6 +648,9 @@ int main(int argc, char *argv[]) {
 		case 'f':
 			force = true;
 			break;
+		case 'h':
+			help(stdout);
+			exit(EXIT_SUCCESS);
 		case 'p':
 			passthrough = true;
 			break;
