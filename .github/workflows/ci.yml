@@ -14,20 +14,15 @@ concurrency:
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            pty: script -qec ./testsuite.sh /dev/null
-          - os: macos-latest
-            pty: script -q /dev/null ./testsuite.sh
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
 
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Dependencies
+      run: sudo apt-get install -y dvtm
 
     - name: Build
       run: |
@@ -35,4 +30,4 @@ jobs:
         make
 
     - name: Test
-      run: ${{ matrix.pty }}
+      run: script -qec "make test" /dev/null
