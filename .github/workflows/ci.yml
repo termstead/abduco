@@ -30,4 +30,6 @@ jobs:
         make
 
     - name: Test
-      run: script -qec "make test" /dev/null
+      env:
+        TERM: xterm
+      run: script -qe -E never -c "make test" /dev/null
