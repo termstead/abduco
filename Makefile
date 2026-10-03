@@ -26,6 +26,9 @@ config.mk:
 abduco: config.h config.mk *.c
 	${CC} ${CFLAGS} ${CFLAGS_STD} ${CFLAGS_AUTO} ${CFLAGS_EXTRA} ${SRC} ${LDFLAGS} ${LDFLAGS_STD} ${LDFLAGS_AUTO} -o $@
 
+test: abduco
+	./testsuite.sh
+
 debug: clean
 	make CFLAGS_EXTRA='${CFLAGS_DEBUG}'
 
@@ -64,4 +67,4 @@ uninstall:
 	@echo removing zsh completion file from ${DESTDIR}${SHAREDIR}/zsh/site-functions
 	@rm -f ${DESTDIR}${SHAREDIR}/zsh/site-functions/_abduco
 
-.PHONY: all clean dist install installdirs install-strip install-completion uninstall debug
+.PHONY: all clean dist test install installdirs install-strip install-completion uninstall debug

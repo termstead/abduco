@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Dependencies
+      run: sudo apt-get install -y dvtm
+
+    - name: Build
+      run: |
+        ./configure
+        make
+
+    - name: Test
+      env:
+        TERM: xterm
+      run: script -qe -E never -c "make test" /dev/null
